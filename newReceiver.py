@@ -10,6 +10,7 @@ from urllib3.util import Retry
 from requests.adapters import HTTPAdapter
 import schedule
 
+
 class DataLogger():
     def __init__(self, fn):
         self.fn = fn
@@ -24,6 +25,7 @@ class DataLogger():
 def connect_db():
     conn = sqlite3.connect('/home/pi/stay-watch-reciever/log.db')
     return conn
+
 
 def update_log(address, date, rssi):
     conn = connect_db()
