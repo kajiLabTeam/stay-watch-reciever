@@ -23,14 +23,15 @@ class DataLogger():
 
 # データベースとのコネクションを確立する関数
 def connect_db():
-    conn = sqlite3.connect('/home/pi/stay-watch/log.db')
+    conn = sqlite3.connect('/home/pi/stay-watch-reciever/log.db')
     return conn
 
 
 def update_log(address, date, rssi):
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute('UPDATE users set date=?, rssi=? WHERE address=?', (date, rssi, address))
+    cur.execute('UPDATE users set date=?, rssi=? WHERE address=?',
+                (date, rssi, address))
     conn.commit()
     conn.close()
 
@@ -90,7 +91,7 @@ class LeAdvertisingReport():
     def event_detected(self):
         global user_id
         # 特定のMacアドレスを含むモノ以外は除外する
-        #if 'XX:XX' not in self.mac_address:
+        # if 'XX:XX' not in self.mac_address:
         #    return
 
         # 検知レポートを表示
@@ -129,7 +130,8 @@ class LeAdvertisingReport():
 
 def run_lescan():
     while True:
-        process = subprocess.Popen('hcitool lescan --duplicates', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen('hcitool lescan --duplicates',
+                                   shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         while True:
             output = process.stdout.readline()
 
@@ -149,7 +151,8 @@ def run_btmon():
 
     tmp = None
     while True:
-        process = subprocess.Popen('btmon', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(
+            'btmon', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         while True:
             output = process.stdout.readline()  # バッファから1行読み込む(出力がリアルタイムで改行されるたびに取得が可能)
 
@@ -160,7 +163,8 @@ def run_btmon():
             # outputの中身がNoneでなければ下記の処理を行う
             if output:
                 try:
-                    line = output.decode('utf-8').strip()   # outputの中身はbytes型なので文字列に変換する．また文字列の両端の連続する空白文字等を取り除く
+                    # outputの中身はbytes型なので文字列に変換する．また文字列の両端の連続する空白文字等を取り除く
+                    line = output.decode('utf-8').strip()
                 except:
                     break
 
@@ -234,10 +238,10 @@ def post_data():
 
         print('Response = {}\n'.format(response.status_code))
 
-
     # dateをNULLにする
     try:
-        cur.execute('UPDATE users set date=?, rssi=? WHERE date IS NOT NULL', (None, None))
+        cur.execute(
+            'UPDATE users set date=?, rssi=? WHERE date IS NOT NULL', (None, None))
         conn.commit()
         conn.close()
     except:
