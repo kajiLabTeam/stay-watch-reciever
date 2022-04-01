@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="梶研におけるメンバーの滞在情報・履歴の確認ができるサービスです。">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <title>New Stay Watch</title>
+    <!--SEO対策のようなもの？-->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="New Stay Watch">
+    <meta property="og:description" content="梶研におけるメンバーの滞在情報・履歴の確認ができるサービスです。">
+    <meta property="og:url" content="https://kajilab.net/">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- ページをキャッシュさせないようにする -->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <!-- レスポンシブに対応させる -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="main.css">
+</head>
+
+
+<body>
+
+    <!-- ナビゲーションバーの設定 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
+        <!-- 真ん中に寄せて表示する -->
+        <div class="container">
+
+            <!-- ページ名 -->
+            <a class="navbar-brand" href="#">
+                <img src="icon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+                <span style="font-weight:bold;">New!</span> Stay Watch
+            </a>
+
+            <!-- 左側に表示する要素 -->
+            <ul class="nav nav-pills tablist mr-auto mt-1 mb-1">
+                <li class="nav-item">
+                    <a class="nav-link active text-white" id="stay" data-toggle="pill" href="#stayTableObj" role="tab" aria-controls="pills-home" aria-selected="true">在室者<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" id="log" data-toggle="pill" href="#logTableObj" role="tab" aria-controls="pills-profile" aria-selected="false">在室履歴</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" id="info" data-toggle="pill" href="#userTableObj" role="tab" aria-controls="pills-profile" aria-selected="false">利用者情報</a>
+                </li>
+            </ul>
+
+            <!-- 右側に表示する要素 -->
+            <ul class="navbar-nav ml-3">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        管理者メニュー
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">新規登録(工事中)</a>
+                        <a class="dropdown-item" href="#">変更(工事中)</a>
+                        <a class="dropdown-item" href="#">設定(工事中)</a>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+
+
+    <main class="tab-content container mb-5">
+
+        <!-- ローディングメッセージ -->
+        <span id="circle">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <span style="font-size: 200%;">Loading...</span>
+        </span>
+
+        <!-- 在室履歴のボタンをクリックした時に表示するローディングメッセージ用の定義 -->
+        <span id="circle2"></span>
+
+        <!-- 在室者の一覧表 -->
+        <div class="tab-pane fade show active mt-3" id="stayTableObj" role="tabpanel" aria-labelledby="stay">
+            <h2>滞在者一覧</h2>
+            <div class="table-responsive">
+                <table class="table text-nowrap table-striped table-hover" id="stayTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <!-- <th scope="col" data-field="ID" class="align-middle">ID</th> -->
+                            <th scope="col" data-field="name" class="align-middle">Name</th>
+                            <th scope="col" data-field="team" class="align-middle">Team</th>
+                            <th scope="col" data-field="room" class="align-middle">Room</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <!-- 滞在履歴の一覧表 -->
+        <div class="tab-pane fade mt-3" id="logTableObj" role="tabpanel" role="tabpanel" aria-labelledby="log">
+            <h2>滞在履歴一覧</h2>
+            <div class="table-responsive">
+                <table class="table text-nowrap table-striped table-hover" id="logTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" data-field="date" class="align-middle">Date</th>
+                            <!-- <th scope="col" data-field="ID">ID</th> -->
+                            <th scope="col" data-field="name" class="align-middle">Name</th>
+                            <th scope="col" data-field="team" class="align-middle">Team</th>
+                            <th scope="col" data-field="period" class="align-middle">Period</th>
+                            <th scope="col" data-field="room" class="align-middle">Room</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <!-- 滞在履歴の一覧表 -->
+        <div class="tab-pane fade mt-3" id="userTableObj" role="tabpanel" role="tabpanel" aria-labelledby="info">
+            <h2>利用者一覧</h2>
+            <div class="table-responsive">
+                <table class="table text-nowrap table-striped table-hover" id="userTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" data-field="date" class="align-middle">Date</th>
+                            <!-- <th scope="col" data-field="ID">ID</th> -->
+                            <th scope="col" data-field="name" class="align-middle">Name</th>
+                            <th scope="col" data-field="team" class="align-middle">Team</th>
+                            <th scope="col" data-field="period" class="align-middle">Period</th>
+                            <th scope="col" data-field="room" class="align-middle">Room</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        
+        <!-- デバック用 -->
+        <!-- <div class="container">
+            <p>表示1：<span id="span1"></span></p>
+            <p>表示2：<span id="span2"></span></p>
+            <p>表示3：<span id="span3"></span></p>
+            <p>表示4：<span id="span4"></span></p>
+        
+            <form id="form1">
+                <input type="button" id="button1" value="ボタン1">
+            </form>
+        </div> -->
+
+    </main>
+
+
+    <!-- フッター -->
+    <footer class="fixed-bottom bg-white text-center">
+        <small>&copy; Kaji Laboratory Allright Reserved.</small>
+    </footer>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="main.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+</body>
+
+</html>

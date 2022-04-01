@@ -1,0 +1,31 @@
+/* 表が横にはみだす問題を解決する為の設定 */
+/* table {
+width: 100%;
+table-layout: fixed;
+word-break: break-all;
+word-wrap: break-all;
+} */
+
+.table-responsive {
+    table-layout: fixed;
+}
+
+/* ボタンクリック時の色設定 */
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #F06292;
+}
+
+/* ナビゲーションバーのボタンの間隔設定 */
+.nav-pills li {
+    margin-left: 5px;
+} 
+
+/* ナビゲーションバーのボタン内のフォント設定 */
+.nav-pills a {
+    font-size: 110%;
+} 
+
+/* 管理者メニューボタンのフォントサイズを変更 */
+.dropdown a{
+    font-size: 110%;
+}
