@@ -207,7 +207,7 @@ def post_data():
         read_datas.append({'uuid': i[0], 'rssi': i[1]})
 
     # サーバに送信するデータ
-    post_datas = {"Beacons": read_datas, "roomID": 1}
+    post_datas = {"Beacons": read_datas, "roomID": 5}
     print(post_datas)
 
     # 実際に送信する処理(前のコード)
