@@ -23,7 +23,7 @@ class DataLogger():
 
 # データベースとのコネクションを確立する関数
 def connect_db():
-    conn = sqlite3.connect('/home/pi/stay-watch/log.db')
+    conn = sqlite3.connect('/home/pi/stay-watch-reciever/log.db')
     return conn
 
 
@@ -221,7 +221,7 @@ def post_data():
 
     with requests.Session() as session:
         # リトライの設定
-        retries = Retry(total=5,# リトライ回数
+        retries = Retry(total=5,  # リトライ回数
                         backoff_factor=2,  # sleep時間
                         status_forcelist=[500, 502, 503, 504])  # timeout以外でリトライするステータスコード
 
@@ -245,6 +245,7 @@ def post_data():
     except:
         conn.close()
     # print(datetime.datetime.now())
+
 
 if __name__ == '__main__':
     global user_id
@@ -281,4 +282,3 @@ if __name__ == '__main__':
     # while True:
     #     schedule.run_pending()
     #     time.sleep(1)
-
