@@ -55,8 +55,8 @@ def dump_services(dev):
                     break
                 try:
                     val = dev.readCharacteristic(h)
-                    print ("\t%04x:     <%s>" %
-                           (h, binascii.b2a_hex(val).decode('utf-8')))
+                    print("\t%04x:     <%s>" %
+                          (h, binascii.b2a_hex(val).decode('utf-8')))
                 except btle.BTLEException:
                     break
 
@@ -87,7 +87,7 @@ class ScanPrint(btle.DefaultDelegate):
         for (sdid, desc, val) in dev.getScanData():
             if len(val) == 50:
                 # sent_datas.append([val[8:40], int(dev.rssi)])
-                sent_datas.append({'id': val[8:40], 'rssi': int(dev.rssi)})
+                sent_datas.append({'uuid': val[8:40], 'rssi': int(dev.rssi)})
                 print("UUID: " + val[8:40])
 
         # print ('    Device (%s): %s (%s), %d dBm %s' %
@@ -100,24 +100,26 @@ class ScanPrint(btle.DefaultDelegate):
         # for (sdid, desc, val) in dev.getScanData():
         #     if sdid in [8, 9]:
         #         print ('\t' + desc + ': \'' + ANSI_CYAN + val + ANSI_OFF + '\'')
-                
+
         #     else:
         #         print ('\t' + desc + ': <' + val + '>')
-                
+
         # if not dev.scanData:
         #     print ('\t(no data)')
         # print
 
 # データをサーバにPOSTする関数
+
+
 def post_data():
     global sent_datas
 
     # サーバに送信するデータ
-    post_datas = {"member": sent_datas, "room": "学生部屋"}
+    post_datas = {"Beacons": sent_datas, "roomID": 1}
     print(post_datas)
 
     # サーバーのURL
-    server_url = "https://kajilab.net/stay-watch/update"
+    server_url = "https://go-staywatch.kajilab.tk/room/v1/beacon"
 
     with requests.Session() as session:
 
@@ -168,11 +170,11 @@ def main():
 
     try:
         devices = scanner.scan(arg.timeout)
-    except :
+    except:
         pass
 
     if arg.discover:
-        print (ANSI_RED + "Discovering services..." + ANSI_OFF)
+        print(ANSI_RED + "Discovering services..." + ANSI_OFF)
 
         for d in devices:
             if not d.connectable or d.rssi < arg.sensitivity:
@@ -186,6 +188,7 @@ def main():
             dev.disconnect()
 
     post_data()
+
 
 if __name__ == "__main__":
     main()
