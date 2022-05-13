@@ -249,13 +249,16 @@ def post_data():
 
 if __name__ == '__main__':
     global user_id
-    post_interval = 3     # 3分
+    # post_interval = 3     # 3分
     print("START!!")
 
     # macアドレスとID対応表(辞書型)を作成
     conn = connect_db()
     cur = conn.cursor()
+    # macアドレスからUUIDに変換
     address = [i[0] for i in cur.execute("SELECT address FROM users")]
+
+    
     ids = [i[0] for i in cur.execute("SELECT id FROM users")]
     user_id = {k: v for k, v in zip(address, ids)}
     conn.close()
