@@ -1,7 +1,6 @@
 sudo pip3 install schedule
 sudo pip3 install bluepy
 
-sudo nano /etc/systemd/system/autostart.servicen
 sudo cp /home/pi/stay-watch-reciever/autostart.service  /etc/systemd/system/
 
 sudo chown root:root /etc/systemd/system/autostart.service
