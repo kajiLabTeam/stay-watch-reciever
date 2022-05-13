@@ -87,8 +87,9 @@ class ScanPrint(btle.DefaultDelegate):
         for (sdid, desc, val) in dev.getScanData():
             if len(val) == 50:
                 # sent_datas.append([val[8:40], int(dev.rssi)])
-                sent_datas.append({'uuid': val[8:40], 'rssi': int(dev.rssi)})
-                print("UUID: " + val[8:40])
+                if(val[8:11] == 'e7d6'):
+                    sent_datas.append({'uuid': val[8:40], 'rssi': int(dev.rssi)})
+                    print("UUID: " + val[8:40])
 
         # print ('    Device (%s): %s (%s), %d dBm %s' %
         #        (status,
