@@ -1,0 +1,11 @@
+[Unit]
+Description=do something
+ConditionPathExists=/home/pi/stay-watch-reciever
+
+[Service]
+ExecStart=/home/pi/stay-watch-reciever/newstart.sh
+Restart=no
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
