@@ -88,7 +88,7 @@ class ScanPrint(btle.DefaultDelegate):
             if len(val) == 50:
                 # sent_datas.append([val[8:40], int(dev.rssi)])
 
-                if(val[8:12] == 'e7d6'):
+                if(val[8:12] == 'e7d6' and val[8:40] != 'e7d61ea3f8dd49c88f2ff2484c07acb9'):
                     sent_datas.append(
                         {'uuid': val[8:40], 'rssi': int(dev.rssi)})
                     print("UUID: " + val[8:40])
