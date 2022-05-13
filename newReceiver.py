@@ -258,7 +258,6 @@ if __name__ == '__main__':
     # macアドレスからUUIDに変換
     address = [i[0] for i in cur.execute("SELECT address FROM users")]
 
-    
     ids = [i[0] for i in cur.execute("SELECT id FROM users")]
     user_id = {k: v for k, v in zip(address, ids)}
     conn.close()
