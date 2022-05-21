@@ -101,7 +101,7 @@ class ScanPrint(btle.DefaultDelegate):
                 if(val[8:12] == 'e7d6' and val[8:40] != 'e7d61ea3f8dd49c88f2ff2484c07acb9' and judge_unique(val[8:40])):
                     sent_datas.append(
                         {'uuid': val[8:40], 'rssi': int(dev.rssi)})
-                    print("UUID: " + val[8:40])
+                    # print("UUID: " + val[8:40])
 
         # print ('    Device (%s): %s (%s), %d dBm %s' %
         #        (status,
@@ -138,12 +138,23 @@ def connect_db():
 def insert_log(uuid, rssi):
     conn = connect_db()
     cur = conn.cursor()
-    cur.execute('insert into users (uuid, rssi) values(?, ?)', [uuid, rssi])
+    # cur.execute('select uuid from users')
+    cur.execute('select * from users where uuid = ?',[uuid])
+
+    # uuidが存在しない場合のみ追加
+    cur.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
+    if cur.fetchone() is None:
+        cur.execute("INSERT INTO users (uuid, rssi,count) VALUES(?, ? , 1)", (uuid, rssi))
+    else:
+        for row in cur:            
+            print(row)        
+        cur.execute("UPDATE users SET rssi=?,count=? where uuid=?",(row[1]+rssi,row[2]+1,uuid))
+
     conn.commit()
     conn.close()
 
-
 def main():
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--hci', action='store', type=int, default=0,
                         help='Interface number for scan')
