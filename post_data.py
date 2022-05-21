@@ -3,6 +3,7 @@ from urllib3.util import Retry
 from requests.adapters import HTTPAdapter
 import json
 import sqlite3
+import math
 
 
 # データをサーバにPOSTする関数
@@ -45,7 +46,7 @@ def connect_db():
 def read_db():
     conn = connect_db()
     cur = conn.cursor()
-    read_datas = cur.execute('SELECT uuid, rssi FROM users')
+    read_datas = cur.execute('SELECT uuid, rssi, count FROM users')
     return read_datas
 
 
@@ -57,9 +58,9 @@ def delete_db():
 
 
 def main():
-
     # DBから在室者のデータを取得
-    read_datas = [{'uuid': d[0], 'rssi': d[1]} for d in read_db()]
+    read_datas = [{'uuid': d[0], 'rssi': math.floor(
+        d[1]/d[2])} for d in read_db()]
 
     # 形式を整えてサーバに送信
     post_data(read_datas)

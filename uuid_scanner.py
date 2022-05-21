@@ -134,22 +134,25 @@ def connect_db():
     conn = sqlite3.connect('./tmpLog.db')
     return conn
 
-
 def insert_log(uuid, rssi):
     conn = connect_db()
     cur = conn.cursor()
-    # cur.execute('select uuid from users')
-    cur.execute('select * from users where uuid = ?',[uuid])
+    
 
     # uuidが存在しない場合のみ追加
     cur.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
     if cur.fetchone() is None:
         cur.execute("INSERT INTO users (uuid, rssi,count) VALUES(?, ? , 1)", (uuid, rssi))
-    else:
+    else:        
+        cur.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
         for row in cur:            
-            print(row)        
-        cur.execute("UPDATE users SET rssi=?,count=? where uuid=?",(row[1]+rssi,row[2]+1,uuid))
 
+            cur.execute("UPDATE users SET rssi=?,count=? where uuid=?",(row[1]+rssi,row[2]+1,uuid))
+
+    
+    # cur.execute('select * from users')
+    # for row in cur:
+    #     print(row)
     conn.commit()
     conn.close()
 
