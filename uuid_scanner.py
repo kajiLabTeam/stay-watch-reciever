@@ -122,6 +122,8 @@ class ScanPrint(btle.DefaultDelegate):
         # print
 
 # データをDBに書き込む関数
+
+
 def write_db():
     global sent_datas
     for d in sent_datas:
@@ -131,30 +133,32 @@ def write_db():
 
 # データベースとのコネクションを確立する関数
 def connect_db():
-    conn = sqlite3.connect('./tmpLog.db')
+    conn = sqlite3.connect('/home/pi/stay-watch-reciever/tmpLog.db')
     return conn
+
 
 def insert_log(uuid, rssi):
     conn = connect_db()
     cur = conn.cursor()
-    
 
     # uuidが存在しない場合のみ追加
     cur.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
     if cur.fetchone() is None:
-        cur.execute("INSERT INTO users (uuid, rssi,count) VALUES(?, ? , 1)", (uuid, rssi))
-    else:        
+        cur.execute(
+            "INSERT INTO users (uuid, rssi,count) VALUES(?, ? , 1)", (uuid, rssi))
+    else:
         cur.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
-        for row in cur:            
+        for row in cur:
 
-            cur.execute("UPDATE users SET rssi=?,count=? where uuid=?",(row[1]+rssi,row[2]+1,uuid))
+            cur.execute("UPDATE users SET rssi=?,count=? where uuid=?",
+                        (row[1]+rssi, row[2]+1, uuid))
 
-    
     # cur.execute('select * from users')
     # for row in cur:
     #     print(row)
     conn.commit()
     conn.close()
+
 
 def main():
 
