@@ -39,7 +39,7 @@ def post_data(sent_datas):
 
 # データベースとのコネクションを確立する関数
 def connect_db():
-    conn = sqlite3.connect('tmpLog.db')
+    conn = sqlite3.connect('/home/pi/stay-watch-reciever/tmpLog.db')
     return conn
 
 
