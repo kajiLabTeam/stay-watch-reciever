@@ -8,6 +8,7 @@ import json
 import requests
 from urllib3.util import Retry
 from requests.adapters import HTTPAdapter
+import sqlite3
 
 if os.getenv('C', '1') == '0':
     ANSI_RED = ''
@@ -61,6 +62,15 @@ def dump_services(dev):
                     break
 
 
+def judge_unique(value):
+    global sent_datas
+    uuid_list = [i['uuid'] for i in sent_datas]
+    if value in uuid_list:
+        return False
+    else:
+        return True
+
+
 class ScanPrint(btle.DefaultDelegate):
 
     def __init__(self, opts):
@@ -88,10 +98,10 @@ class ScanPrint(btle.DefaultDelegate):
             if len(val) == 50:
                 # sent_datas.append([val[8:40], int(dev.rssi)])
 
-                if(val[8:12] == 'e7d6' and val[8:40] != 'e7d61ea3f8dd49c88f2ff2484c07acb9'):
+                if(val[8:12] == 'e7d6' and val[8:40] != 'e7d61ea3f8dd49c88f2ff2484c07acb9' and judge_unique(val[8:40])):
                     sent_datas.append(
                         {'uuid': val[8:40], 'rssi': int(dev.rssi)})
-                    print("UUID: " + val[8:40])
+                    # print("UUID: " + val[8:40])
 
         # print ('    Device (%s): %s (%s), %d dBm %s' %
         #        (status,
@@ -111,40 +121,47 @@ class ScanPrint(btle.DefaultDelegate):
         #     print ('\t(no data)')
         # print
 
-# データをサーバにPOSTする関数
+# データをDBに書き込む関数
 
 
-def post_data():
+def write_db():
     global sent_datas
+    for d in sent_datas:
+        insert_log(d['uuid'], d['rssi'])
+        print('{}: {}'.format(d['uuid'], d['rssi']))
 
-    # サーバに送信するデータ
-    post_datas = {"Beacons": sent_datas, "roomID": 1}
-    print(post_datas)
 
-    # サーバーのURL
-    server_url = "https://go-staywatch.kajilab.tk/room/v1/beacon"
+# データベースとのコネクションを確立する関数
+def connect_db():
+    conn = sqlite3.connect('/home/pi/stay-watch-reciever/tmpLog.db')
+    return conn
 
-    with requests.Session() as session:
 
-        # リトライの設定
-        retries = Retry(total=5,  # リトライ回数
-                        backoff_factor=2,  # sleep時間
-                        status_forcelist=[500, 502, 503, 504])  # timeout以外でリトライするステータスコード
+def insert_log(uuid, rssi):
+    conn = connect_db()
+    cur = conn.cursor()
 
-        # セッションを確立
-        session.mount(server_url, HTTPAdapter(max_retries=retries))
+    # uuidが存在しない場合のみ追加
+    cur.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
+    if cur.fetchone() is None:
+        cur.execute(
+            "INSERT INTO users (uuid, rssi,count) VALUES(?, ? , 1)", (uuid, rssi))
+    else:
+        cur.execute("SELECT * FROM users WHERE uuid = ?", (uuid,))
+        for row in cur:
 
-        # connect timeoutを10秒, read timeoutを30秒に設定
-        response = session.post(url=server_url,
-                                headers={'Content-Type': 'application/json'},
-                                data=json.dumps(post_datas),
-                                stream=True,
-                                timeout=(10.0, 30.0))
+            cur.execute("UPDATE users SET rssi=?,count=? where uuid=?",
+                        (row[1]+rssi, row[2]+1, uuid))
 
-        print('Response = {}\n'.format(response.status_code))
+    # cur.execute('select * from users')
+    # for row in cur:
+    #     print(row)
+    conn.commit()
+    conn.close()
 
 
 def main():
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--hci', action='store', type=int, default=0,
                         help='Interface number for scan')
@@ -190,7 +207,7 @@ def main():
             dump_services(dev)
             dev.disconnect()
 
-    post_data()
+    write_db()
 
 
 if __name__ == "__main__":
