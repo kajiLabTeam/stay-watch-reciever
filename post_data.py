@@ -4,13 +4,17 @@ from requests.adapters import HTTPAdapter
 import json
 import sqlite3
 import math
+import os
+from dotenv import load_dotenv
+# .envファイルの内容を読み込見込む
+load_dotenv()
 
 
 # データをサーバにPOSTする関数
 def post_data(sent_datas):
 
     # サーバに送信するデータ
-    post_datas = {"Beacons": sent_datas, "roomID": 1}
+    post_datas = {"Beacons": sent_datas, "roomID": os.environ['ROOM_ID']}
     print(post_datas)
 
     # サーバーのURL
