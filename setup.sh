@@ -1,6 +1,7 @@
 sudo pip3 install schedule
 sudo pip3 install bluepy
 sudo pip3 install requests
+sudo pip3 install python-dotenv
 sudo cp /home/pi/stay-watch-reciever/autostart.service  /etc/systemd/system/
 
 sudo chmod +x /home/pi/stay-watch-reciever/newstart.sh
