@@ -12,9 +12,11 @@ load_dotenv()
 
 # データをサーバにPOSTする関数
 def post_data(sent_datas):
-
+    #int型にキャスト
+    ROOM_ID = int(os.getenv('ROOM_ID'))
+    
     # サーバに送信するデータ
-    post_datas = {"Beacons": sent_datas, "roomID": os.environ['ROOM_ID']}
+    post_datas = {"Beacons": sent_datas, "roomID": ROOM_ID}
     print(post_datas)
 
     # サーバーのURL
