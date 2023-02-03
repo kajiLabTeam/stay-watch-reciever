@@ -16,7 +16,7 @@ def post_data(sent_datas):
     ROOM_ID = int(os.getenv('ROOM_ID'))
     
     # サーバに送信するデータ
-    post_datas = {"Beacons": sent_datas, "roomID": ROOM_ID}
+    post_datas = {"beacons": sent_datas, "roomId": ROOM_ID}
     print(post_datas)
 
     # サーバーのURL
