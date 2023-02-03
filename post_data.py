@@ -20,7 +20,7 @@ def post_data(sent_datas):
     print(post_datas)
 
     # サーバーのURL
-    server_url = "https://go-staywatch.kajilab.tk/room/v1/beacon"
+    server_url = "https://go-staywatch.kajilab.tk/api/v1/stayers"
 #     server_url = "https://go-staywatch-test.kajilab.tk/room/v1/beacon"    
 
     with requests.Session() as session:
