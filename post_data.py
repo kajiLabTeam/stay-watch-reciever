@@ -12,15 +12,16 @@ load_dotenv()
 
 # データをサーバにPOSTする関数
 def post_data(sent_datas):
-    #int型にキャスト
+    #envファイルから部屋IDとAPIキーを取得
     ROOM_ID = int(os.getenv('ROOM_ID'))
+    STAYWATCH_API_KEY = os.getenv('STAYWATCH_API_KEY')
     
     # サーバに送信するデータ
     post_datas = {"beacons": sent_datas, "roomId": ROOM_ID}
     print(post_datas)
 
     # サーバーのURL
-    server_url = "https://go-staywatch.kajilab.tk/api/v1/stayers"
+    server_url = "https://staywatch-backend.kajilab.net/api/v1/stayers"
 #     server_url = "https://go-staywatch-test.kajilab.tk/room/v1/beacon"    
 
     with requests.Session() as session:
@@ -36,7 +37,10 @@ def post_data(sent_datas):
 
         # connect timeoutを10秒, read timeoutを30秒に設定
         response = session.post(url=server_url,
-                                headers={'Content-Type': 'application/json'},
+                                headers={
+                                    'Content-Type': 'application/json',
+                                    'X-API-Key': STAYWATCH_API_KEY
+                                },
                                 data=json.dumps(post_datas),
                                 stream=True,
                                 timeout=(10.0, 30.0))
@@ -53,7 +57,7 @@ def connect_db():
 def read_db():
     conn = connect_db()
     cur = conn.cursor()
-    read_datas = cur.execute('SELECT uuid, rssi, count FROM users')
+    read_datas = cur.execute('SELECT uuid, msd, rssi, count FROM users')
     return read_datas
 
 
@@ -66,14 +70,16 @@ def delete_db():
 
 def main():
     # DBから在室者のデータを取得
-    read_datas = [{'uuid': d[0], 'rssi': math.floor(
-        d[1]/d[2])} for d in read_db()]
+    read_datas = [{'uuid': d[0], 'msd': d[1], 'rssi': math.floor(d[2]/d[3])} for d in read_db()]
+
+    # DBを初期化する
+    delete_db()
 
     # 形式を整えてサーバに送信
     post_data(read_datas)
 
-    # DBを初期化する
-    delete_db()
+    # # DBを初期化する
+    # delete_db()
 
 
 if __name__ == '__main__':

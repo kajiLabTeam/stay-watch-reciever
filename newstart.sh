@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo python3 /home/pi/stay-watch-reciever/createDB.py
 while true
 do
 
