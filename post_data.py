@@ -12,8 +12,9 @@ load_dotenv()
 
 # データをサーバにPOSTする関数
 def post_data(sent_datas):
-    #int型にキャスト
+    #envファイルから部屋IDとAPIキーを取得
     ROOM_ID = int(os.getenv('ROOM_ID'))
+    STAYWATCH_API_KEY = os.getenv('STAYWATCH_API_KEY')
     
     # サーバに送信するデータ
     post_datas = {"beacons": sent_datas, "roomId": ROOM_ID}
@@ -36,7 +37,10 @@ def post_data(sent_datas):
 
         # connect timeoutを10秒, read timeoutを30秒に設定
         response = session.post(url=server_url,
-                                headers={'Content-Type': 'application/json'},
+                                headers={
+                                    'Content-Type': 'application/json',
+                                    'X-API-Key': STAYWATCH_API_KEY
+                                },
                                 data=json.dumps(post_datas),
                                 stream=True,
                                 timeout=(10.0, 30.0))
