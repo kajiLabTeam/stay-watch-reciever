@@ -2,6 +2,7 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+VENV_DIR="$REPO_DIR/.venv"
 SYSTEMD_DIR=/etc/systemd/system
 UNITS=(
     stay-watch-scan.service
@@ -10,11 +11,17 @@ UNITS=(
     stay-watch-post.timer
 )
 
-sudo pip3 install -r "$REPO_DIR/requirements.txt"
+if [[ ! -d "$VENV_DIR" ]]; then
+    python3 -m venv "$VENV_DIR"
+fi
+
+"$VENV_DIR/bin/pip" install --upgrade pip
+"$VENV_DIR/bin/pip" install -r "$REPO_DIR/requirements.txt"
 
 for unit in "${UNITS[@]}"; do
-    sudo install -m 644 -o root -g root \
-        "$REPO_DIR/systemd/$unit" "$SYSTEMD_DIR/$unit"
+    sed "s|__REPO_DIR__|$REPO_DIR|g" "$REPO_DIR/systemd/$unit" \
+        | sudo tee "$SYSTEMD_DIR/$unit" > /dev/null
+    sudo chmod 644 "$SYSTEMD_DIR/$unit"
 done
 
 sudo systemctl daemon-reload

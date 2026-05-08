@@ -19,19 +19,24 @@ scripts/install.sh セットアップスクリプト
 
 ## セットアップ (Raspberry Pi)
 
+事前に `python3-venv` が必要です (Bookworm 以降は PEP 668 によりシステム pip が拒否されるため、本リポジトリは venv 前提)。
+
 ```bash
+sudo apt install -y python3-venv
 cp .env.example .env
 $EDITOR .env                 # ROOM_ID と STAYWATCH_API_KEY を設定
-./scripts/install.sh         # pip install + systemd unit 配置 + timer 起動
+./scripts/install.sh         # .venv 作成 + 依存 install + systemd unit 配置 + timer 起動
 ```
+
+`install.sh` は実行時のリポジトリ絶対パスを systemd unit にテンプレート展開 (`__REPO_DIR__`) するため、`/home/pi` 以外のユーザでも動作します。
 
 ## 手動操作
 
 ```bash
-python -m stay_watch init    # DB 初期化
-python -m stay_watch scan    # 1 回スキャン
-python -m stay_watch post    # 集計 + POST + DB クリア
-python -m stay_watch clear   # DB のみクリア
+.venv/bin/python -m stay_watch init    # DB 初期化
+.venv/bin/python -m stay_watch scan    # 1 回スキャン
+.venv/bin/python -m stay_watch post    # 集計 + POST + DB クリア
+.venv/bin/python -m stay_watch clear   # DB のみクリア
 ```
 
 ## systemd 操作 (Makefile)
