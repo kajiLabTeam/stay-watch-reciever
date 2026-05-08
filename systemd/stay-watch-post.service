@@ -1,0 +1,13 @@
+[Unit]
+Description=stay-watch send aggregated data to server (one-shot)
+ConditionPathExists=/home/pi/stay-watch-reciever
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi/stay-watch-reciever
+EnvironmentFile=/home/pi/stay-watch-reciever/.env
+ExecStart=/usr/bin/python3 -m stay_watch post
+ExecStartPost=-/usr/bin/hciconfig hci0 down
+ExecStartPost=-/usr/bin/hciconfig hci0 up

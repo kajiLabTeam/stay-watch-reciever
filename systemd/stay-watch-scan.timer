@@ -1,0 +1,11 @@
+[Unit]
+Description=stay-watch periodic BLE scan
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=70s
+AccuracySec=1s
+Unit=stay-watch-scan.service
+
+[Install]
+WantedBy=timers.target
