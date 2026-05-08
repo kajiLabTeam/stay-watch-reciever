@@ -1,12 +1,12 @@
 [Unit]
 Description=stay-watch BLE scan (one-shot)
-ConditionPathExists=/home/pi/stay-watch-reciever
+ConditionPathExists=__REPO_DIR__
 After=bluetooth.service
 Requires=bluetooth.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/home/pi/stay-watch-reciever
-EnvironmentFile=/home/pi/stay-watch-reciever/.env
-ExecStartPre=/usr/bin/python3 -m stay_watch init
-ExecStart=/usr/bin/python3 -m stay_watch scan -t 60
+WorkingDirectory=__REPO_DIR__
+EnvironmentFile=__REPO_DIR__/.env
+ExecStartPre=__REPO_DIR__/.venv/bin/python -m stay_watch init
+ExecStart=__REPO_DIR__/.venv/bin/python -m stay_watch scan -t 60
