@@ -1,0 +1,11 @@
+[Unit]
+Description=stay-watch periodic data POST
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+AccuracySec=1s
+Unit=stay-watch-post.service
+
+[Install]
+WantedBy=timers.target
