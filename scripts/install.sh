@@ -10,6 +10,15 @@ UNITS=(
     stay-watch-post.service
     stay-watch-post.timer
 )
+APT_PACKAGES=(
+    python3-venv
+    build-essential
+    libglib2.0-dev
+    pkg-config
+)
+
+sudo apt-get update
+sudo apt-get install -y "${APT_PACKAGES[@]}"
 
 if [[ ! -d "$VENV_DIR" ]]; then
     python3 -m venv "$VENV_DIR"
